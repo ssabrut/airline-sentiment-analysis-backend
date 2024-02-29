@@ -1,8 +1,8 @@
 from pydantic import BaseModel
-from typing import Optional, Union, List, Dict
+from typing import Optional, Dict
 
 
 class Response(BaseModel):
     status: int
     message: str
-    data: Optional[Union[List, Dict]] = None
+    data: Optional[Dict] = None
