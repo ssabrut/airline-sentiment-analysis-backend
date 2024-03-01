@@ -1,4 +1,4 @@
-FROM python:3-alpine AS builder
+FROM python:3.9 AS builder
  
 WORKDIR /app
  
@@ -7,19 +7,19 @@ ENV VIRTUAL_ENV=/app/venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
  
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt --no-cache-dir
  
 # Stage 2
-FROM python:3-alpine AS runner
+FROM python:3.9 AS runner
  
 WORKDIR /app
  
 COPY --from=builder /app/venv venv
-COPY main.py main.py
+COPY app.py app.py
  
 ENV VIRTUAL_ENV=/app/venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
  
 EXPOSE 8000
  
-CMD [ "uvicorn", "--host", "0.0.0.0", "main:app" ]
+CMD [ "uvicorn", "--host", "0.0.0.0", "app:app" ]
