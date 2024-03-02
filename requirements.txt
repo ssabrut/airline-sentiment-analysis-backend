@@ -1,5 +1,6 @@
 fastapi
 huggingface-hub
+motor
 numpy
 pinecone-client
 pydantic
