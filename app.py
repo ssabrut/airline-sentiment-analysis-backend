@@ -1,11 +1,11 @@
 from fastapi import FastAPI, Request
 from server.response import Response
-from server.model.embedding import Embedding
 from pinecone import Pinecone
 from dotenv import load_dotenv
 import os
 from datetime import datetime
 import motor.motor_asyncio
+import requests
 
 load_dotenv()
 app = FastAPI()
@@ -15,8 +15,10 @@ index = pinecone.Index(os.getenv("PINECONE_INDEX"))
 DB_SERVER = os.getenv("DB_SERVER")
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
+HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
 
 DB_URL = f"mongodb+srv://{DB_USER}:{DB_PASSWORD}@{DB_SERVER}"
+API_URL = "https://api-inference.huggingface.co/models/intfloat/e5-small-v2"
 
 client = motor.motor_asyncio.AsyncIOMotorClient(DB_URL)
 database = client.airlinesentiment
@@ -42,10 +44,27 @@ async def get_embedding(request: Request):
         dict: dictionary containing the response
     """
 
+    comments = []
     data = await request.json()
-    embedding = Embedding().encode(data["text"]).tolist()
+
+    async for comment in comment_collection.find():
+        comments.append(comment["text"])
+
+    payload = {
+        "inputs": {
+            "source_sentence": data["text"],
+            "sentences": comments,
+        },
+    }
+
+    response = requests.post(
+        API_URL,
+        headers={"Authorization": f"Bearer {HUGGINGFACE_API_KEY}"},
+        json=payload,
+    ).json()
+
     matches = index.query(
-        vector=embedding, top_k=11, namespace="sentiment", include_metadata=True
+        vector=response[:384], top_k=11, namespace="sentiment", include_metadata=True
     ).to_dict()
 
     sentiments = {}
