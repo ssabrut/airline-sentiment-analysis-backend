@@ -1,21 +1,12 @@
-FROM python:3.9 AS builder
+FROM python:3.9
  
 WORKDIR /app
  
-RUN python3 -m venv venv
-ENV VIRTUAL_ENV=/app/venv
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
- 
-COPY requirements.txt .
-RUN pip install -r requirements.txt
- 
-# Stage 2
-FROM python:3.9 AS runner
- 
-WORKDIR /app
- 
-COPY --from=builder /app/venv venv
-COPY app.py app.py
+COPY . /app
+
+RUN python -m venv venv
+RUN /app/venv/bin/pip install --upgrade pip
+RUN /app/venv/bin/pip install -r requirements.txt
  
 ENV VIRTUAL_ENV=/app/venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"

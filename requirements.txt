@@ -5,6 +5,7 @@ numpy
 pinecone-client
 pydantic
 pydantic_core
+pypiserver
 python-dotenv
 sentence-transformers
 torch

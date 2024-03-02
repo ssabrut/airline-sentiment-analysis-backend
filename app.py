@@ -28,35 +28,6 @@ def read_root():
     return Response(message="Hello World", status=200)
 
 
-@app.get("/api/get-comments")
-async def get_comments(request: Request):
-    """
-    Get the comments
-
-    Args:
-    ----
-        request (Request): request object
-
-    Returns:
-    ----
-        dict: dictionary containing the response
-    """
-
-    comments = []
-    response = await comment_collection.find().sort("timestamp", -1).to_list(length=11)
-
-    for comment in response:
-        comments.append(
-            {
-                "text": comment["text"],
-                "sentiment": comment["sentiment"],
-                "timestamp": comment["timestamp"],
-            }
-        )
-
-    return Response(message="success", status=200, data={"comments": comments})
-
-
 @app.post("/api/get-sentiment")
 async def get_embedding(request: Request):
     """
