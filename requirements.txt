@@ -1,5 +1,4 @@
 fastapi
-huggingface-hub
 motor
 numpy
 pinecone-client
@@ -7,8 +6,6 @@ pydantic
 pydantic_core
 pypiserver
 python-dotenv
-sentence-transformers
-torch
-transformers
+requests
 typing_extensions
 uvicorn
