@@ -72,10 +72,10 @@ async def get_embedding(request: Request):
         API_URL,
         headers={"Authorization": f"Bearer {HUGGINGFACE_API_KEY}"},
         json=payload,
-    ).json()
+    )
 
     matches = index.query(
-        vector=response[:384], top_k=11, namespace="sentiment", include_metadata=True
+        vector=response.json()[:384], top_k=5, namespace="sentiment", include_metadata=True
     ).to_dict()
 
     sentiments = {}
