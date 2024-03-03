@@ -5,10 +5,21 @@ from dotenv import load_dotenv
 import os
 from datetime import datetime
 import motor.motor_asyncio
+from fastapi.middleware.cors import CORSMiddleware
 import requests
 
 load_dotenv()
 app = FastAPI()
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 pinecone = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 index = pinecone.Index(os.getenv("PINECONE_INDEX"))
 
