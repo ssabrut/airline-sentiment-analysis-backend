@@ -7,6 +7,7 @@ from datetime import datetime
 import motor.motor_asyncio
 from fastapi.middleware.cors import CORSMiddleware
 import requests
+import time
 
 load_dotenv()
 app = FastAPI()
@@ -68,6 +69,7 @@ async def get_embedding(request: Request):
         },
     }
 
+    time.sleep(30)
     response = requests.post(
         API_URL,
         headers={"Authorization": f"Bearer {HUGGINGFACE_API_KEY}"},
@@ -75,7 +77,10 @@ async def get_embedding(request: Request):
     )
 
     matches = index.query(
-        vector=response.json()[:384], top_k=5, namespace="sentiment", include_metadata=True
+        vector=response.json()[:384],
+        top_k=5,
+        namespace="sentiment",
+        include_metadata=True,
     ).to_dict()
 
     sentiments = {}
